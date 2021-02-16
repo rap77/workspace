@@ -1,0 +1,273 @@
+# se crea el workspace con una aplicacion angular y stilos scss
+npx create-nx-workspace workspace --cli=angular --preset=angular --appName=tiny-app --style=scss
+
+yarn create nx-workspace beehive
+
+# se actualiza el workspace
+nx update @angular/cli @angular/core
+
+
+# se crea libreria assets en directorio compartido
+
+nx generate library assets --directory=shared --tags="scope:shared,type:assets" --style=scss
+
+# limpia los archivos y directorios
+npx rimraf ./apps/tiny-app/src/assets ./libs/shared/assets/*.js ./libs/shared/assets/*.json ./libs/shared/assets/src/*.* ./libs/shared/assets/src/lib
+
+# configurar carpetas de archivos compartidos y mueva el favicon
+npx mkdirp ./libs/shared/assets/src/assets/fonts ./libs/shared/assets/src/assets/icons ./libs/shared/assets/src/assets/images
+
+"" > ./libs/shared/assets/src/assets/fonts/.gitkeep
+
+"" > ./libs/shared/assets/src/assets/icons/.gitkeep
+
+"" > ./libs/shared/assets/src/assets/images/.gitkeep
+
+mv ./apps/tiny-app/src/favicon.ico ./libs/shared/assets/src
+
+
+# modificar el archivo angular json
+{
+  "//": "angular.json",
+  "projects": {
+    "tiny-app": {
+      "architect": {
+        "build": {
+          "options": {
+            "assets": [
+              {
+                "glob": "favicon.ico",
+                "input": "libs/shared/assets/src",
+                "output": "./"
+              },
+              {
+                "glob": "**/*",
+                "input": "libs/shared/assets/src/assets",
+                "output": "assets"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+
+
+# probar en local
+nx serve --open
+
+#probar en produccion
+nx build --prod
+
+npx http-server dist/apps/tiny-app -o
+
+# descargar logo nx
+npx -p wget-improved nwget https://nx.dev/assets/images/nx-logo-white.svg -O ./libs/shared/assets/src/assets/images/nx-logo-white.svg
+
+# creat nueva libreria para estilos
+nx generate library styles --directory=shared --tags="scope:shared,type:styles" --style=scss
+
+npx rimraf ./libs/shared/styles/*.js ./libs/shared/styles/*.json ./libs/shared/styles/src/*.* ./libs/shared/styles/src/lib/*.*
+
+"# shared-styles" > ./libs/shared/styles/README.md
+
+# remueva los architecs de angular.json
+{
+  "//": "angular.json",
+  "projects": {
+    "shared-styles": {
+      "architect": {}
+    }
+  }
+}
+
+#configurar el punto de entrada de los estilos
+mv ./apps/tiny-app/src/styles.scss ./libs/shared/styles/src/lib/_global.scss
+
+"@import './lib/global';" > ./libs/shared/styles/src/index.scss
+
+# modificar angular.json
+{
+  "//": "angular.json",
+  "projects": {
+    "tiny-app": {
+      "architect": {
+        "build": {
+          "options": {
+            "styles": [
+              "libs/shared/styles/src/index.scss"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+
+# generar libreria para ambiente de trabajo
+
+nx generate library environments --directory=shared --tags="scope:shared,type:environments" --style=scss
+
+npx rimraf ./libs/shared/environments/src/lib/*.*
+
+# mover archivos del entorno de ambiente y configurar las aplicaciones dependdientes
+
+mv ./apps/tiny-app/src/environments/*.* ./libs/shared/environments/src/lib
+
+"export * from './lib/environment';" > ./libs/shared/environments/src/index.ts
+
+npx rimraf ./apps/tiny-app/src/environments
+
+# modificar angular.json
+
+{
+  "//": "angular.json",
+  "projects": {
+    "tiny-app": {
+      "architect": {
+        "build": {
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "libs/shared/environments/src/lib/environment.ts",
+                  "with": "libs/shared/environments/src/lib/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# modificar main.ts
+// main.ts
+import { enableProdMode } from '@angular/core';
+import { environment } from '@workspace/shared/environments';
+
+if (environment.production) {
+  enableProdMode();
+}
+
+# Crear repositorio de github
+git remote add origin git@github.com:rap77/workspace.git
+git push -u origin master
+
+# instalar ngrx
+nx add @ngrx/store --minimal false
+
+nx add @ngrx/store-devtools
+
+# crear CoreModule
+
+// core.module.ts
+import { NgModule } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '@workspace/shared/environments';
+
+import { metaReducers, reducers } from './reducers';
+
+@NgModule({
+  imports: [
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+    }),
+    StoreDevtoolsModule.instrument({
+      logOnly: environment.production,
+      maxAge: 25,
+    }),
+  ],
+})
+export class CoreModule {}
+
+
+# Crear libreria de acceso a Datos compartidos
+nx generate library data-access --directory=shared --tags="scope:shared,type:data-access" --style=scss
+
+mv ./apps/tiny-app/src/app/reducers ./libs/shared/data-access/src/lib
+
+# modifique el shared-data-access module
+// shared-data-access.module.ts
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '@workspace/shared/environments';
+
+import { metaReducers, reducers } from './reducers';
+
+@NgModule({
+  imports: [
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+    }),
+    StoreDevtoolsModule.instrument({
+      logOnly: environment.production,
+      maxAge: 25,
+    }),
+  ],
+})
+export class SharedDataAccessRootModule {}
+
+@NgModule({})
+export class SharedDataAccessModule {
+  static forRoot(): ModuleWithProviders<SharedDataAccessRootModule> {
+    return {
+      ngModule: SharedDataAccessRootModule,
+    };
+  }
+}
+
+# Editar CoreModule
+// core.module.ts
+import { NgModule } from '@angular/core';
+import { SharedDataAccessModule } from '@workspace/shared/data-access';
+
+@NgModule({
+  imports: [
+    SharedDataAccessModule.forRoot(),
+  ],
+})
+export class CoreModule {}
+
+# Agregar metareducer soo para desarrollo
+// reducers/index.ts
+import { ActionReducerMap, MetaReducer } from '@ngrx/store';
+import { environment } from '@workspace/shared/environments';
+
+export interface State {}
+
+export const reducers: ActionReducerMap<State> = {};
+
+export const metaReducers: MetaReducer<State>[] =
+  !environment.production ? [] : [];
+
+# añadir reducer debug
+// reducers/debug.ts
+import { ActionReducer } from '@ngrx/store';
+
+export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
+  return (state, action) => {
+    console.log('state', state);
+    console.log('action', action);
+
+    return reducer(state, action);
+  };
+}
+
+# modifica reducer index
+// reducers/index.ts
+import { ActionReducerMap, MetaReducer } from '@ngrx/store';
+import { environment } from '@workspace/shared/environments';
+
+import { debug } from './debug';
+
+export interface State {}
+
+export const reducers: ActionReducerMap<State> = {};
+
+export const metaReducers: MetaReducer<State>[] =
+  !environment.production ? [debug] : [];

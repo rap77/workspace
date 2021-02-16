@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { greet } from '@workspace/utils';
 
 @Component({
   selector: 'workspace-root',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'tiny-app';
+
+  greeting = greet('rafa');
 }
