@@ -156,6 +156,9 @@ if (environment.production) {
 git remote add origin git@github.com:rap77/workspace.git
 git push -u origin master
 
+hub create rap77/workspace
+gpsup
+
 # instalar ngrx
 nx add @ngrx/store --minimal false
 
