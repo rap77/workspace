@@ -1502,6 +1502,27 @@
     merge-source-map "^1.1.0"
     schema-utils "^2.7.0"
 
+"@ngrx/component-store@^11.0.1":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/component-store/-/component-store-11.0.1.tgz#1479702fbff854d6d955f2540839067ddf51a637"
+  integrity sha512-kbiO6Mzh1X12TXedz0xo4i62pwWfkdocw6mzGB1eNZtZYbS1377okZDcXlTeRJH4WhzxqsucKIYXbCE77AhH2A==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store-devtools@^11.0.0":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-11.0.1.tgz#64b332f64e73538e7facb9d9d7e5f66c7ff1b834"
+  integrity sha512-ez4GW08lqJonvLVtlWM/4MJY/oHFFItMtreOtE/US+yAPuDZTnhmfjX9hqk3ySkX+drPjOfeqQ+vTYCkbmgwrw==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store@^11.0.0":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-11.0.1.tgz#fd229b704bb9847ddd2c299cf26eb19017aa7f9a"
+  integrity sha512-ULk+z7fXg1S0mbSXatHplvg8Rqj9Hglo6pVugaDgLdFR3DD5Wpl0cefvLBscaeZF9DGrLBoPZVlFq/LACRr6tA==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngtools/webpack@11.0.7":
   version "11.0.7"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-11.0.7.tgz#3ec8cd967fdf1dfc79e6b1469369148bc3a93bd1"
