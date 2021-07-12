@@ -32,6 +32,99 @@
   },
   "defaultProject": "tiny-app",
   "projects": {
+    "models": {
+      "root": "libs/models",
+      "sourceRoot": "libs/models/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/models/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/models"
+          ],
+          "options": {
+            "jestConfig": "libs/models/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared-assets": {
+      "projectType": "library",
+      "root": "libs/shared/assets",
+      "sourceRoot": "libs/shared/assets/src",
+      "prefix": "workspace",
+      "architect": {}
+    },
+    "shared-data-access": {
+      "projectType": "library",
+      "root": "libs/shared/data-access",
+      "sourceRoot": "libs/shared/data-access/src",
+      "prefix": "workspace",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/data-access/src/**/*.ts",
+              "libs/shared/data-access/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/shared/data-access"
+          ],
+          "options": {
+            "jestConfig": "libs/shared/data-access/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared-environments": {
+      "projectType": "library",
+      "root": "libs/shared/environments",
+      "sourceRoot": "libs/shared/environments/src",
+      "prefix": "workspace",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/environments/src/**/*.ts",
+              "libs/shared/environments/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/shared/environments"
+          ],
+          "options": {
+            "jestConfig": "libs/shared/environments/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared-styles": {
+      "projectType": "library",
+      "root": "libs/shared/styles",
+      "sourceRoot": "libs/shared/styles/src",
+      "prefix": "workspace",
+      "architect": {}
+    },
     "tiny-app": {
       "projectType": "application",
       "root": "apps/tiny-app",
@@ -46,7 +139,6 @@
             "main": "apps/tiny-app/src/main.ts",
             "polyfills": "apps/tiny-app/src/polyfills.ts",
             "tsConfig": "apps/tiny-app/tsconfig.app.json",
-            "aot": true,
             "assets": [
               {
                 "glob": "favicon.ico",
@@ -59,8 +151,16 @@
                 "output": "assets"
               }
             ],
-            "styles": ["libs/shared/styles/src/index.scss"],
-            "scripts": []
+            "styles": [
+              "libs/shared/styles/src/index.scss"
+            ],
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -90,7 +190,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -120,7 +221,9 @@
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/tiny-app"],
+          "outputs": [
+            "coverage/apps/tiny-app"
+          ],
           "options": {
             "jestConfig": "apps/tiny-app/jest.config.js",
             "passWithNoTests": true
@@ -149,7 +252,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/tiny-app-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "apps/tiny-app-e2e/**/*.{js,ts}"
+            ]
           }
         }
       }
@@ -162,99 +267,18 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/utils/**/*.ts"]
+            "lintFilePatterns": [
+              "libs/utils/**/*.ts"
+            ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/utils"],
+          "outputs": [
+            "coverage/libs/utils"
+          ],
           "options": {
             "jestConfig": "libs/utils/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "models": {
-      "root": "libs/models",
-      "sourceRoot": "libs/models/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/models/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/models"],
-          "options": {
-            "jestConfig": "libs/models/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "shared-assets": {
-      "projectType": "library",
-      "root": "libs/shared/assets",
-      "sourceRoot": "libs/shared/assets/src",
-      "prefix": "workspace",
-      "architect": {}
-    },
-    "shared-styles": {
-      "projectType": "library",
-      "root": "libs/shared/styles",
-      "sourceRoot": "libs/shared/styles/src",
-      "prefix": "workspace",
-      "architect": {}
-    },
-    "shared-environments": {
-      "projectType": "library",
-      "root": "libs/shared/environments",
-      "sourceRoot": "libs/shared/environments/src",
-      "prefix": "workspace",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/shared/environments/src/**/*.ts",
-              "libs/shared/environments/src/**/*.html"
-            ]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/shared/environments"],
-          "options": {
-            "jestConfig": "libs/shared/environments/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "shared-data-access": {
-      "projectType": "library",
-      "root": "libs/shared/data-access",
-      "sourceRoot": "libs/shared/data-access/src",
-      "prefix": "workspace",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/shared/data-access/src/**/*.ts",
-              "libs/shared/data-access/src/**/*.html"
-            ]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/shared/data-access"],
-          "options": {
-            "jestConfig": "libs/shared/data-access/jest.config.js",
             "passWithNoTests": true
           }
         }
